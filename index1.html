@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Management Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-8">Traffic Management Dashboard</h1>
+
+    <!-- Ambulance Alert Section -->
+    {% if ambulance_detected %}
+    <div class="mb-8 p-4 bg-red-600 text-white rounded-lg shadow-lg">
+      <h2 class="text-xl font-semibold">🚨 Ambulance Detected! Prioritizing Traffic Clearance...</h2>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 gap-8">
+      <!-- Traffic Monitoring Section with Images -->
+      <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Live Traffic Monitoring</h2>
+        {% for i in range(4) %}
+        <div class="mb-4">
+          <p>{{ ['North', 'West', 'South', 'East'][i] }}: {{ vehicles_counts[i] }} vehicles</p>
+          <div class="relative w-full h-4 bg-gray-700 rounded-lg">
+            <div class="absolute top-0 left-0 h-4 bg-green-500 rounded-lg" style="width: {{ percentages[i] }}%;"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Display Uploaded Images with Border Colors Based on Signal Status -->
+      <div class="grid grid-cols-2 gap-4">
+        {% for i in range(4) %}
+        <div class="p-4 border-4 rounded-lg {% if signal_status[i] == 'Green' %}border-green-500{% elif signal_status[i] == 'Yellow' %}border-yellow-500{% else %}border-red-500{% endif %}">
+          <h3 class="text-sm mb-2">{{ ['North', 'West', 'South', 'East'][i] }} Signal</h3>
+          <img src="{{ url_for('static', filename='uploads/signal' + (i+1)|string + '.jpg') }}" alt="{{ ['North', 'West', 'South', 'East'][i] }} Signal Image" class="w-full h-32 object-cover" />
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Traffic Signal Status Section -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mt-8">
+      <h2 class="text-xl font-semibold mb-4">Traffic Signal Status</h2>
+      <div class="space-y-4">
+        {% for i in range(4) %}
+        <div class="p-4 border-2 rounded-lg {% if signal_status[i] == 'Green' %}border-green-500{% elif signal_status[i] == 'Yellow' %}border-yellow-500{% else %}border-red-500{% endif %}">
+          <p>{{ ['North', 'West', 'South', 'East'][i] }}: <span class="{% if signal_status[i] == 'Green' %}text-green-400{% elif signal_status[i] == 'Yellow' %}text-yellow-400{% else %}text-red-400{% endif %}">{{ signal_status[i] }}</span> ({{ signal_times[i] }} sec)</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Form to Upload Images -->
+    <div class="mt-8">
+      <h3 class="text-lg font-semibold mb-4">Upload Traffic Signal Images</h3>
+      <form action="/" method="POST" enctype="multipart/form-data">
+        <div class="grid grid-cols-2 gap-4">
+          {% for i in range(4) %}
+          <div>
+            <label for="signal{{ i+1 }}" class="text-sm">{{ ['North', 'West', 'South', 'East'][i] }} Image:</label>
+            <input type="file" name="signal{{ i+1 }}" id="signal{{ i+1 }}" class="block text-sm mt-2" />
+          </div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Upload Images</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
