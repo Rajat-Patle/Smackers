@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Management Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    .tooltip {
+      display: none;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+    .traffic-light:hover .tooltip {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-1/4 bg-gray-800 p-4">
+      <h2 class="text-lg font-semibold mb-2">Traffic Signal Status</h2>
+      <div class="space-y-4">
+        {% for i in range(4) %}
+          <div class="p-2 border-2 rounded-lg {% if signal_status[i] == 'Green' %}border-green-500{% elif signal_status[i] == 'Yellow' %}border-yellow-500{% else %}border-red-500{% endif %}">
+            <p><strong>{{ ['North', 'West', 'South', 'East'][i] }}:</strong> 
+              <span class="{% if signal_status[i] == 'Green' %}text-green-400{% elif signal_status[i] == 'Yellow' %}text-yellow-400{% else %}text-red-400{% endif %}">
+                {{ signal_status[i] }}
+              </span> 
+              ({{ signal_times[i] }} sec)
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Intersection View -->
+    <div class="w-3/4 p-4 flex justify-center items-center">
+      <div class="relative w-3/4 h-3/4 flex items-center justify-center">
+        <!-- Roads -->
+        <div class="absolute w-1/2 h-1 bg-gray-700 top-1/2 left-1/4"></div>
+        <div class="absolute h-1/2 w-1 bg-gray-700 left-1/2 top-1/4"></div>
+
+        <!-- Traffic Lights -->
+        {% for i in range(4) %}
+        <div class="absolute traffic-light flex items-center justify-center w-12 h-12 rounded-full {% if signal_status[i] == 'Green' %}bg-green-500{% elif signal_status[i] == 'Yellow' %}bg-yellow-500{% else %}bg-red-500{% endif %}"
+             style="{{ ['top-0 left-1/2 -translate-x-1/2', 'left-0 top-1/2 -translate-y-1/2', 'bottom-0 left-1/2 -translate-x-1/2', 'right-0 top-1/2 -translate-y-1/2'][i] }}">
+          <span class="text-xs">{{ ['N', 'W', 'S', 'E'][i] }}</span>
+          <div class="tooltip">{{ signal_times[i] }} sec stop</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Form to upload images -->
+  <div class="p-4">
+    <h3 class="text-lg font-semibold">Upload Traffic Signal Images</h3>
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <div class="space-y-4">
+        {% for i in range(4) %}
+        <div>
+          <label for="signal{{ i+1 }}" class="text-sm">{{ ['North', 'West', 'South', 'East'][i] }} Image:</label>
+          <input type="file" name="signal{{ i+1 }}" id="signal{{ i+1 }}" class="block text-sm">
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="mt-4 p-2 bg-blue-500 text-white rounded">Upload Images</button>
+    </form>
+  </div>
+
+</body>
+</html>
