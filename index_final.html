@@ -6,7 +6,7 @@
   <center><title>Autonomous AI Traffic Management</title></center>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
   <style>
-          .neon-text {
+    .neon-text {
       background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ff6600);
       background-clip: text;
       -webkit-background-clip: text;
@@ -26,6 +26,17 @@
 <body class="bg-gray-900 text-white">
   <div class="container mx-auto p-8">
     <center><h1 class="text-3xl font-bold mb-8 neon-text">Autonomous AI Traffic Management</h1></center>
+
+    <!-- Flash Messages Section for Alerts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-8 p-4 rounded-lg shadow-lg {% if category == 'danger' %}bg-red-600{% elif category == 'success' %}bg-green-600{% else %}bg-gray-600{% endif %}">
+            <h2 class="text-xl font-semibold">{{ message }}</h2>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     <!-- Ambulance Alert Section -->
     {% if ambulance_detected %}
