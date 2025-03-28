@@ -10,6 +10,13 @@
   <div class="container mx-auto p-8">
     <h1 class="text-3xl font-bold mb-8">Traffic Management Dashboard</h1>
 
+    <!-- Ambulance Alert Section -->
+    {% if ambulance_detected %}
+    <div class="mb-8 p-4 bg-red-600 text-white rounded-lg shadow-lg">
+      <h2 class="text-xl font-semibold">🚨 Ambulance Detected! Prioritizing Traffic Clearance...</h2>
+    </div>
+    {% endif %}
+
     <!-- Traffic Monitoring Section -->
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
       <h2 class="text-xl font-semibold mb-4">Live Traffic Monitoring</h2>
