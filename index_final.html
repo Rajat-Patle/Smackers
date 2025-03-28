@@ -5,10 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <center><title>Autonomous AI Traffic Management</title></center>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+  <style>
+          .neon-text {
+      background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ff6600);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 2s linear infinite;
+    }
+    @keyframes glow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    .neon-border {
+      border-color: #00ffff;
+      box-shadow: 0 0 15px #00ffff;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white">
   <div class="container mx-auto p-8">
-    <center><h1 class="text-3xl font-bold mb-8">Autonomous AI Traffic Management</h1></center>
+    <center><h1 class="text-3xl font-bold mb-8 neon-text">Autonomous AI Traffic Management</h1></center>
 
     <!-- Ambulance Alert Section -->
     {% if ambulance_detected %}
