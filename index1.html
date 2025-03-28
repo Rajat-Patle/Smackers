@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Management Dashboard</title>
+  <center><title>Autonomous AI Traffic Management</title></center>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
 </head>
 <body class="bg-gray-900 text-white">
   <div class="container mx-auto p-8">
-    <h1 class="text-3xl font-bold mb-8">Traffic Management Dashboard</h1>
+    <center><h1 class="text-3xl font-bold mb-8">Autonomous AI Traffic Management</h1></center>
 
     <!-- Ambulance Alert Section -->
     {% if ambulance_detected %}
@@ -17,24 +17,24 @@
     </div>
     {% endif %}
 
-    <!-- Traffic Monitoring Section -->
+    <!-- Traffic Monitoring Section with Larger Images and Smaller Bars -->
     <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
       <h2 class="text-xl font-semibold mb-4">Live Traffic Monitoring</h2>
-      {% for i in range(4) %}
-      <div class="mb-4 flex items-center">
-        <img src="{{ url_for('static', filename='uploads/signal' ~ (i+1) ~ '.jpg') }}" alt="Signal {{ ['North', 'West', 'South', 'East'][i] }}" class="w-32 h-32 object-cover mr-4 {% if signal_status[i] == 'Green' %}border-4 border-green-500{% elif signal_status[i] == 'Yellow' %}border-4 border-yellow-500{% else %}border-4 border-red-500{% endif %}">
-        <div class="w-full">
-          <p>{{ ['North', 'West', 'South', 'East'][i] }}: {{ vehicles_counts[i] }} vehicles</p>
-          <div class="relative w-full h-4 bg-gray-700 rounded-lg">
-            <div class="absolute top-0 left-0 h-4 bg-green-500 rounded-lg" style="width: {{ percentages[i] }}%;"></div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for i in range(4) %}
+        <div class="text-center">
+          <p class="mb-2">{{ ['North', 'West', 'South', 'East'][i] }}: {{ vehicles_counts[i] }} vehicles</p>
+          <img src="{{ upload_folder }}/signal{{ i+1 }}.jpg" alt="Traffic Signal {{ i+1 }}" class="w-full h-64 object-cover rounded-lg {% if signal_status[i] == 'Green' %}border-4 border-green-500{% elif signal_status[i] == 'Yellow' %}border-4 border-yellow-500{% else %}border-4 border-red-500{% endif %}" />
+          <div class="relative w-full h-2 bg-gray-700 rounded-lg mt-2" title="{{ vehicles_counts[i] }} vehicles">
+            <div class="absolute top-0 left-0 h-2 bg-green-500 rounded-lg" style="width: {{ percentages[i] }}%;"></div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
 
     <!-- Traffic Signal Status Section -->
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
       <h2 class="text-xl font-semibold mb-4">Traffic Signal Status</h2>
       <div class="space-y-4">
         {% for i in range(4) %}
@@ -43,11 +43,9 @@
         </div>
         {% endfor %}
       </div>
-
-      <!-- Next Green Signal Display -->
-      <div class="mt-8 p-4 bg-blue-700 text-white rounded-lg">
-        {% set next_signal = (signal_status.index('Green') + 1) % 4 %}
-        <h3 class="text-lg font-semibold">Next Signal to Turn Green: {{ ['North', 'West', 'South', 'East'][next_signal] }}</h3>
+      <!-- Next Signal Info -->
+      <div class="mt-8 p-4 bg-blue-600 text-white rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold">Next Signal to Turn Green: {{ ['North', 'West', 'South', 'East'][next_signal] }}</h2>
       </div>
     </div>
 
