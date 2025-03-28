@@ -14,6 +14,9 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 # Load YOLO model
 model = YOLO('models/yolov8n.pt')  # Ensure the correct model path
 
+def calculate_percentage(count, max_count):
+    return (count / max_count * 100) if max_count > 0 else 0
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     # Default values for first-time load
@@ -56,12 +59,17 @@ def home():
             next_signal = (max_index + 1) % 4
             signal_status[next_signal] = "Yellow"
 
+    # Prevent Zero Division and Calculate Percentages
+    max_vehicle_count = max(vehicles_counts) if any(vehicles_counts) else 1
+    percentages = [calculate_percentage(count, max_vehicle_count) for count in vehicles_counts]
+
     return render_template(
         "index.html",
         signal_times=signal_times,
         vehicles_counts=vehicles_counts,
         signal_status=signal_status,
-        upload_folder=UPLOAD_FOLDER  # For displaying uploaded images
+        percentages=percentages,
+        upload_folder=UPLOAD_FOLDER
     )
 
 if __name__ == "__main__":
