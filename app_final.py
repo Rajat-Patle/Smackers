@@ -21,6 +21,7 @@ def home():
     vehicles_counts = [0, 0, 0, 0]
     signal_status = ["Red", "Red", "Red", "Red"]
     ambulance_detected = [False, False, False, False]
+    next_signal = 0  # Initialize with default value
 
     if request.method == "POST":
         uploaded_files = []
@@ -48,21 +49,26 @@ def home():
             signal_status = ["Red"] * 4
             signal_status[max_index] = "Green"
             signal_times[max_index] = 60
+            next_signal = (max_index + 1) % 4
         else:
             # Normal traffic management
             max_vehicles = max(vehicles_counts)
-            max_index = vehicles_counts.index(max_vehicles)
-
-            for i in range(4):
-                if i == max_index:
-                    signal_times[i] = 60
-                    signal_status[i] = "Green"
-                else:
-                    signal_times[i] = 30
-                    signal_status[i] = "Red"
-
-            next_signal = (max_index + 1) % 4
-            signal_status[next_signal] = "Yellow"
+            if max_vehicles > 0:
+                max_index = vehicles_counts.index(max_vehicles)
+                next_signal = (max_index + 1) % 4
+                for i in range(4):
+                    if i == max_index:
+                        signal_times[i] = 60
+                        signal_status[i] = "Green"
+                    else:
+                        signal_times[i] = 30
+                        signal_status[i] = "Red"
+                signal_status[next_signal] = "Yellow"
+            else:
+                # No vehicles detected - Reset and default to North
+                next_signal = 0
+                signal_status[0] = "Green"
+                signal_times[0] = 30
 
     max_vehicle_count = max(vehicles_counts) if any(vehicles_counts) else 1
     percentages = [calculate_percentage(count, max_vehicle_count) for count in vehicles_counts]
@@ -73,7 +79,9 @@ def home():
         vehicles_counts=vehicles_counts,
         signal_status=signal_status,
         percentages=percentages,
-        upload_folder=UPLOAD_FOLDER
+        upload_folder=UPLOAD_FOLDER,
+        next_signal=next_signal,
+        ambulance_detected=any(ambulance_detected)
     )
 
 if __name__ == "__main__":
